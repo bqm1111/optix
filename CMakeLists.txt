@@ -35,6 +35,7 @@ include(PTXUtilities)
 
 # for common headers
 include_directories(./)
-include_directories(include)
+include_directories(common)
 
 add_subdirectory(triangle)
+add_subdirectory(dynamicGeometry)

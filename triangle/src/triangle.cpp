@@ -21,6 +21,7 @@ Triangle::~Triangle()
 
     OPTIX_CHECK(optixDeviceContextDestroy(optix_context));
 }
+
 void Triangle::configCamera()
 {
     camera.setEye({0.0f, 0.0f, 2.0f});
@@ -84,7 +85,6 @@ void Triangle::buildGAS()
     CUDA_CHECK(cudaFree(reinterpret_cast<void *>(d_temp_buffer_gas)));
     CUDA_CHECK(cudaFree(reinterpret_cast<void *>(d_vertices)));
 }
-
 void Triangle::createModule(const std::string ptx_filename)
 {
     std::ifstream ptx_in(ptx_filename);
@@ -112,8 +112,6 @@ void Triangle::createModule(const std::string ptx_filename)
     pipeline_compile_options.pipelineLaunchParamsVariableName = "params";
     pipeline_compile_options.usesPrimitiveTypeFlags = OPTIX_PRIMITIVE_TYPE_FLAGS_TRIANGLE;
 
-    size_t inputSize = 0;
-    // const char *input = sutil::getInputData(OPTIX_SAMPLE_NAME, OPTIX_SAMPLE_DIR, ptx_filename.c_str(), inputSize);
     OPTIX_CHECK(optixModuleCreateFromPTX(optix_context, &module_compile_options, &pipeline_compile_options,
                                          ptx.c_str(), ptx.size(), nullptr, nullptr, &module));
 }
@@ -261,7 +259,7 @@ void Triangle::launch()
     params.handle = gas_handle;
     params.cam_eye = camera.eye();
     camera.UVWFrame(params.cam_u, params.cam_v, params.cam_w);
-
+    
     CUdeviceptr d_param;
     CUDA_CHECK(cudaMalloc(reinterpret_cast<void **>(&d_param), sizeof(Params)));
     CUDA_CHECK(cudaMemcpy(
@@ -290,7 +288,7 @@ void Triangle::init()
 {
     createContext();
     buildGAS();
-    createModule("triangle/ptx/triangle.ptx");
+    createModule("ptx/triangle.ptx");
     createProgramGroups();
     createPipeline();
     buildSBT();

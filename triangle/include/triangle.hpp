@@ -18,7 +18,7 @@
 #include <sutil/CUDAOutputBuffer.h>
 #include <common/common.h>
 #include <optix_stack_size.h>
-#include "utils.h"
+#include "common/utils.h"
 #include "opencv2/opencv.hpp"
 typedef SbtRecord<RayGenData> RayGenSbtRecord;
 typedef SbtRecord<MissData> MissSbtRecord;
@@ -29,8 +29,11 @@ struct Triangle
     Triangle();
     ~Triangle();
     OptixDeviceContext optix_context = nullptr;
+
     OptixTraversableHandle gas_handle;
+
     CUdeviceptr d_gas_output_buffer;
+    
     OptixModule module = nullptr;
     OptixPipelineCompileOptions pipeline_compile_options = {};
 
